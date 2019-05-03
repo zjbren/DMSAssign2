@@ -1,0 +1,58 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 3/05/2019, 12:41:15 PM
+    Author     : Zach
+*/
+
+
+.content {
+    text-align: center;
+    align-content: center;
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    
+}
+
+h1 {
+    text-align: center;
+    margin: auto;
+    max-width: 400px;
+    background: white;
+    padding: 20px;    
+}
+
+input[type=date] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 4px;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+    background-color: appworkspace;
+    border: 2px solid black;
+    color: black;
+    padding: 8px 20px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button {
+  background-color: gray;
+  color: white;
+  text-align: center; 
+  text-decoration: none;
+}
+
+button:hover, button:active {
+  background-color: gray;
+}
+

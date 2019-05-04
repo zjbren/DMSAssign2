@@ -5,29 +5,26 @@
  */
 package Servlets;
 
-import Beans.UserBean;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.ejb.EJB;
+import Beans.PostBean;
+import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Zach
  */
-@WebServlet(name = "LoginProcess", urlPatterns = {"/LoginProcess"})
-public class LoginProcess extends HttpServlet {
+@WebServlet(name = "PostProcess", urlPatterns = {"/PostProcess"})
+public class PostProcess extends HttpServlet {
 
     @EJB
-    private UserBean userbean;
-    @EJB
+    private PostBean postbean;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,10 +43,10 @@ public class LoginProcess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginProcess</title>");
+            out.println("<title>Servlet PostProcess</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginProcess at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet PostProcess at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,30 +73,33 @@ public class LoginProcess extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs Takes provided login details
-     * and checks against DB to confirm valid user credentials
+     * @throws IOException if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String code = request.getParameter("status_code");
+        String status = request.getParameter("status");
 
-        String username = request.getParameter("user");
-        //String pwd = request.getParameter("pwd"); Pasword validation not implemented yet
-        ArrayList<String> users = userbean.getUserNames();
-        HttpSession session = request.getSession();
-        session.setAttribute("user", username);
-        if (users.contains(username)) {
-            session.setAttribute("user", username);
-            request.setAttribute("error", "<p style=\"color : blue;\">Logged in as " + username + "</p>");
-            RequestDispatcher view = request.getRequestDispatcher("home.jsp");
-
+        if (!(code.matches("^S[0-9]{4}$"))) {
+            request.setAttribute("error", "<p style=\"color : red;\">Invalid Post Code, Please use format S0000</p>");
+            RequestDispatcher view = request.getRequestDispatcher("post.jsp");
             view.forward(request, response);
         } else {
-            request.setAttribute("error", "<p style=\"color : red;\">Invalid User Name or Password, Please Try Again</p>");
-            RequestDispatcher view = request.getRequestDispatcher("login.jsp");
-            view.forward(request, response);
+            if (!(postbean.checkCode(code))) {
+                postbean.createPost(code, status);
+
+                request.setAttribute("error", "<p style=\"color : blue;\">Post stored succesfully</p>");
+                RequestDispatcher view = request.getRequestDispatcher("post.jsp");
+                view.forward(request, response);
+            } else {
+                request.setAttribute("error", "<p style=\"color : red;\">Code already exists, please select another</p>");
+                RequestDispatcher view = request.getRequestDispatcher("post.jsp");
+                view.forward(request, response);
+            }
+
         }
-     }
+    }
 
     /**
      * Returns a short description of the servlet.

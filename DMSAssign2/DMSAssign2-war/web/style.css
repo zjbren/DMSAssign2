@@ -16,7 +16,7 @@ and open the template in the editor.
     margin: auto;
     background: white;
     padding: 20px;
-    
+
 }
 
 h1 {
@@ -36,23 +36,20 @@ input[type=date] {
 }
 
 input[type=button], input[type=submit], input[type=reset] {
-    background-color: appworkspace;
-    border: 2px solid black;
-    color: black;
-    padding: 8px 20px;
+    background-color: gray;
+    color: white;
+    text-align: center; 
     text-decoration: none;
-    margin: 4px 2px;
-    cursor: pointer;
 }
 
 button {
-  background-color: gray;
-  color: white;
-  text-align: center; 
-  text-decoration: none;
+    background-color: gray;
+    color: white;
+    text-align: center; 
+    text-decoration: none;
 }
 
 button:hover, button:active {
-  background-color: gray;
+    background-color: gray;
 }
 

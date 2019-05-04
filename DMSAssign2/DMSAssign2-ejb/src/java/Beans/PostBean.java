@@ -10,31 +10,25 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 
 /**
- * Bean used to add new users to DB Validates usernames and confirms does not
- * already exist
  *
  * @author Zach
  */
 @Stateless
 @LocalBean
-public class UserBean {
+public class PostBean {
 
-    public void registerUser(String usrName, String pwd, String email) {
-        
+    public void createPost(String code, String status) {
         String driverURL = "org.apache.derby.jdbc.EmbeddedDriver";
         // The dbURL to contain the Database URL
         String dbURL = "jdbc:derby://localhost:1527/ZACHBOOKDB;"
-                + "create=true;user=;password=";
-        try
-        {
+                + "create=true;user=db;password=db";
+        try {
             // Creating SQL query string
             String sqlQuery;
-            ResultSet rs;
             // Step 1: Loading the drivers for JAVA DB
             Class.forName(driverURL);
 
@@ -44,72 +38,64 @@ public class UserBean {
             Statement statement = connection.createStatement();
 
             // Inserting a record in the User table in the DB
-            sqlQuery = "INSET INTO USER VALUES('userName','pwd','email') = '" + usrName + "'," + pwd + "'," + email + "'";
+            sqlQuery = "INSERT INTO POST(status_code, status) VALUES('" + code + "','" + status + "')";
             statement.executeUpdate(sqlQuery);
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
-        } catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Class not found " + e.getMessage());
         }
     }
     
-    public ArrayList getUserNames()
-    {
-        ArrayList userNames = new ArrayList();
-        
+    public String getPost(String code) {
         String driverURL = "org.apache.derby.jdbc.EmbeddedDriver";
         // The dbURL to contain the Database URL
         String dbURL = "jdbc:derby://localhost:1527/ZACHBOOKDB;"
-                + "create=true;user=;password=";
+                + "create=true;user=db;password=db";
         
-        try
-        {
+        String status = "";
+        
+        try {
             // Creating SQL query string
             String sqlQuery;
-            ResultSet rs;
             // Step 1: Loading the drivers for JAVA DB
             Class.forName(driverURL);
 
             Connection connection = DriverManager.getConnection(dbURL);
 
             // Creating the SQL Statement
-            Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement();   
+            ResultSet rs;
 
             // Inserting a record in the User table in the DB
-            sqlQuery = "Select * From USER";
+            sqlQuery = "SELECT status FROM POST where status_code = '" + code + "'";
             rs = statement.executeQuery(sqlQuery);
             
-            while(rs.next())
+            if(rs.next())
             {
-                userNames.add(rs.getString("username"));
+                status = rs.getString("status");
             }
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
-        } catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Class not found " + e.getMessage());
         }
-        return userNames;
+        return status;
     }
-    
-    public String getPwd(String userName)
-    {
-        String pwd = null;
-        
+
+    public boolean checkCode(String code) {
+        Boolean exists = false;
         String driverURL = "org.apache.derby.jdbc.EmbeddedDriver";
         // The dbURL to contain the Database URL
         String dbURL = "jdbc:derby://localhost:1527/ZACHBOOKDB;"
-                + "create=true;user=;password=";
-        try
-        {
+                + "create=true;user=db;password=db";
+        try {
             // Creating SQL query string
             String sqlQuery;
             ResultSet rs;
+
             // Step 1: Loading the drivers for JAVA DB
             Class.forName(driverURL);
 
@@ -119,20 +105,21 @@ public class UserBean {
             Statement statement = connection.createStatement();
 
             // Inserting a record in the User table in the DB
-            sqlQuery = "Select pwd From USER where userName = '" + userName +"'";
+            sqlQuery = "SELECT * FROM POST";
             rs = statement.executeQuery(sqlQuery);
-            
-            pwd = rs.getString("pwd");
-        } catch (SQLException e)
-        {
+
+            while (rs.next()) {
+                if (rs.getString("status_code").equals(code)) {
+                    exists = true;
+                    break;
+                }
+            }
+
+        } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
-        } catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Class not found " + e.getMessage());
         }
-        return pwd;
+        return exists;
     }
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 }

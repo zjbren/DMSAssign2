@@ -20,17 +20,15 @@
             }
         %>
         <div class ="content">
-        <form method ="POST" action ="RegisterProcess">
-            User Name: <input type="text" name= "usrName" required><br>
-            Email:     <input type="text" name= "email" required><br>
-            Password:  <input type="password" value="FakePSW" name ="pwd" required><br>
-            <input type="submit" value="Login" />
-        </form>
-            <jsp:useBean id="loginBean" class="Beans.LoginBean">
-                <%
-                out.print("<p>Current User: " + loginBean.getCurrentUser() + "</p>");
-                %>
-            </jsp:useBean>
+            <form method ="POST" action ="RegisterProcess">
+                User Name: <input type="text" name= "user" size="8" required> Max 8 characters<br>
+                Email:     <input type="text" name= "email" required><br>
+                Password:  <input type="password" value="FakePSW" name ="pwd" required><br>
+                <input type="submit" value="Login" />
+            </form>
+            <%
+                out.print("<p>Current User: " + session.getAttribute("user") + "</p>");
+            %>
         </div>    
     </body>
 </html>

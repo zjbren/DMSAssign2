@@ -29,11 +29,9 @@
             <button onclick="location.href = 'register.jsp'" type="button">Sign up to ZachBook</button>
             <button onclick="location.href = 'index.jsp'" type="button">Return to Home</button>
             
-            <jsp:useBean id="loginBean" class="Beans.LoginBean">
                 <%
-                out.print("<p>Current User: " + loginBean.getCurrentUser() + "</p>");  
+                    out.print("<p>Current User: " + session.getAttribute("user") + "</p>");
                 %>
-            </jsp:useBean>
         </div>
     </body>
 </html>

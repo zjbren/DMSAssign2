@@ -22,11 +22,10 @@
             <p>Name: Zach Brennan</p> 
             <p>Student ID: 16941261</p>
 
-            <jsp:useBean id="loginBean" class="Beans.LoginBean">
                 <%
-                    out.print("<p>Current User: " + loginBean.getCurrentUser() + "</p>");
+                    out.print("<p>Current User: " + session.getAttribute("user") + "</p>");
                 %>
-            </jsp:useBean>
+                
 
         </div>
     </body>

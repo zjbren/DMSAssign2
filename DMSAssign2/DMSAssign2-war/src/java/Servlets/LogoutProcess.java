@@ -5,11 +5,9 @@
  */
 package Servlets;
 
-import Beans.UserBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,9 +20,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author Zach
  */
-@WebServlet(name = "LoginProcess", urlPatterns = {"/LoginProcess"})
-public class LoginProcess extends HttpServlet {
-
+@WebServlet(name = "LogoutProcess", urlPatterns = {"/LogoutProcess"})
+public class LogoutProcess extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +40,10 @@ public class LoginProcess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginProcess</title>");
+            out.println("<title>Servlet LogoutProcess</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginProcess at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LogoutProcess at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -74,29 +71,16 @@ public class LoginProcess extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     * Takes provided login details and checks against DB to confirm valid user credentials
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        session.setAttribute("user", null);
 
-        String username = request.getParameter("userName");
-
-        if (username != null) {
-            HttpSession session = request.getSession();
-
-            
-                session.setAttribute("userName", username);
-
-                RequestDispatcher view = request.getRequestDispatcher("index.jsp");
-                view.forward(request, response);
-
-        } else {
-            request.setAttribute("error", "<p style=\"color : red;\">Null Username, Please Try Again</p>");
-            RequestDispatcher view = request.getRequestDispatcher("login.jsp");
-            view.forward(request, response);
-        }
-
+        request.setAttribute("error", "<p style=\"color : blue;\">Logged out</p>");
+        RequestDispatcher view = request.getRequestDispatcher("index.jsp");
+        view.forward(request, response);
     }
 
     /**

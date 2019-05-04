@@ -6,12 +6,17 @@
 package Servlets;
 
 import java.io.IOException;
+import javax.ejb.EJB;
+import Beans.UserBean;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -19,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "RegisterProcess", urlPatterns = {"/RegisterProcess"})
 public class RegisterProcess extends HttpServlet {
+
+    @EJB
+    private UserBean userbean;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,7 +45,7 @@ public class RegisterProcess extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet RegisterProcess</title>");            
+            out.println("<title>Servlet RegisterProcess</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet RegisterProcess at " + request.getContextPath() + "</h1>");
@@ -72,7 +80,24 @@ public class RegisterProcess extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String username = request.getParameter("user");
+        String pwd = request.getParameter("pwd");
+        String email = request.getParameter("email");
+
+        ArrayList<String> users = userbean.getUserNames();
+        HttpSession session = request.getSession();
+        session.setAttribute("user", username);
+        if (users.contains(username)) {
+            request.setAttribute("error", "<p style=\"color : red;\">Username already exists, Please Try Again</p>");
+            RequestDispatcher view = request.getRequestDispatcher("register.jsp");
+            view.forward(request, response);
+        } else {
+            userbean.registerUser(username, pwd, email);
+            request.setAttribute("error", "<p style=\"color : blue;\">New user registered and logged in!</p>");
+            RequestDispatcher view = request.getRequestDispatcher("home.jsp");
+            view.forward(request, response);
+        }
+
     }
 
     /**
